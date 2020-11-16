@@ -18,3 +18,5 @@ Version 2 is a hybrid element that supports Polymer 1 and Polymer 2.
 `rosrun rospy_tutorials add_two_ints_server`
 3. Polymer run
 `polymer serve`
+4. Go to: 
+`http://127.0.0.1:8081/demo/index.html`
