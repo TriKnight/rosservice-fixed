@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>ros-service demo</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+   
+    <link rel="import" href="../bower_components/polymer/lib/elements/dom-bind.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
+   
+    <link rel="import" href="../bower_components/ros-websocket/ros-websocket.html">
+    <link rel="import" href="../bower_components/ros-service/ros-service.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <p>
+        Run <code>rosrun rospy_tutorials add_two_ints_server</code> as well as the websocket server to try the demo below.
+        Try calling the service without the server to see an error get logged in the console.
+      </p>
+      <demo-snippet>
+        <template>
+          <dom-bind id="demo">
+            <template>
+              <ros-websocket ros="{{ros}}" id="websocket"></ros-websocket>
+              <ros-service
+                auto
+                id="service"
+                on-fail="handleError"
+                on-response="handleResponse"
+                name="/add_two_ints"
+                ros="{{ros}}"
+                service-type="rospy_tutorials/AddTwoInts"
+              ></ros-service>
+              
+              <p>Check the JavaScript console to see if you're connected to the websocket server.</p>
+              <div>
+                <input type="text" id="urlInput" value="ws://localhost:9090"></input>
+                <input id="connectButton" type="button" value="Connect"></input>
+              </div>
+              <div>
+                <input type="text" id="aInput" value="1"></input> + 
+                <input type="text" id="bInput" value="2"></input>
+                <input id="callButton" type="button" value="Call service"></input><br />
+                Answer: {{result.sum}}
+              </div>
+             
+            </template>
+          </dom-bind>
+        </template>
+      </demo-snippet>
+    </div>
+    <script>
+       document.body.style.opacity = 0; // Hide body to prevent FOUC
+       
+      window.addEventListener('WebComponentsReady', function() {
+        document.body.style.opacity = 1;
+        
+        var t = document.querySelector('#demo');
+        var websocket = document.getElementById('websocket');
+        var seedElement = document.getElementById('service');
+
+        websocket.addEventListener('connection', function() {
+          console.log('Connected to the websocket server.');
+          console.log(websocket.ros);
+        });
+        websocket.connect();
+
+        t.$.connectButton.addEventListener('click', function() {
+        websocket.url = document.querySelector('#urlInput').value;
+      });
+      
+      t.handleError = function(evt) {
+        console.error(evt.detail);
+      }
+      
+      t.$.callButton.addEventListener('click', function() {
+       // var request = {
+       //   a: parseInt(t.$.aInput.value),
+       //   b: parseInt(t.$.bInput.value)
+       // };
+       seedElement.call({a: 1, b: 2});
+      });
+
+      });
+    </script>
+  </body>
+</html>
