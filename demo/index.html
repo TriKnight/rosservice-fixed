@@ -80,11 +80,11 @@
       }
       
       t.$.callButton.addEventListener('click', function() {
-       // var request = {
-       //   a: parseInt(t.$.aInput.value),
-       //   b: parseInt(t.$.bInput.value)
-       // };
-       seedElement.call({a: 1, b: 2});
+        var request = {
+          a: parseInt(t.$.aInput.value),
+          b: parseInt(t.$.bInput.value)
+        };
+       seedElement.call(request);
       });
 
       });
